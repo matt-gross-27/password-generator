@@ -32,7 +32,7 @@
     -done
 *~~~~~~~~~~~~~~~~CHECK LIST~~~~~~~~~~~~~~~*/
 
-let characters = {
+var characters = {
   alphaLower: ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"],
   alphaUpper: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"],
   numeric: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"],
@@ -44,6 +44,7 @@ var generateBtn = document.querySelector("#generate");
 
 // Generate Password
 var generatePassword = function(){
+
   //reset password and chosen characters before regenerating
   var randomString = "";
   var userCharacters = [];
@@ -52,35 +53,57 @@ var generatePassword = function(){
   var numeric = false;
   var special = false;
 
-
   // ask for password length
   var promptLength = window.prompt("Please choose a password length.\nEnter a number between 8 and 128");
   
-  //convert string to int
+  // convert string to int
   promptLength = parseInt(promptLength);
   
-  //test if between 8 and 128
+  // test if promptLength between 8 and 128
   if (promptLength >= 8 && promptLength <= 128) {
-  
-    alphaLower = window.confirm ("allow lowercase characters? abc...")
+    
+    // if true ask what types of characters to include
+    
+    // ask user: include lowercase?
+    alphaLower = window.confirm ("allow lowercase characters? abc...");
+    // ask user to confirm.
+    alphaLower = window.confirm ("are you sure?");
     if(alphaLower) {
+      //add lowercase to var userCharacters array
       userCharacters = userCharacters.concat(characters.alphaLower);
     }
-    alphaUpper = window.confirm ("allow uppercase characters? ABC...")
+
+    // ask user: include uppercase?
+    alphaUpper = window.confirm ("allow uppercase characters? ABC...");
+    // ask user to confirm.
+    alphaUpper = window.confirm ("just confirming?");
     if(alphaUpper) {
+      //add uppercase to var userCharacters array
       userCharacters = userCharacters.concat(characters.alphaUpper);
     }
-    numeric = window.confirm ("allow numeric characters? 123...")
+
+    // ask user: include numeric?
+    numeric = window.confirm ("allow numeric characters? 123...");
+    // ask user to confirm.
+    numeric = window.confirm ("are you positive?");
     if(numeric) {
+      //add numeric to var userCharacters array
       userCharacters = userCharacters.concat(characters.numeric);
     }
-    special = window.confirm ("allow special characters? !@#...")
+
+    // ask user: include special?
+    special = window.confirm ("allow special characters? !@#...");
+    // ask user to confirm.
+    special = window.confirm ("final answer?");
     if(special) {
+      // add special to var userCharacters array
       userCharacters = userCharacters.concat(characters.special);
       }
+    // log chosen characters to the console
     console.log(userCharacters);
 
-      if( alphaLower === false &&
+      if( 
+        alphaLower === false &&
         alphaUpper === false &&
         numeric === false &&
         special === false ) {

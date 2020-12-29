@@ -35,6 +35,8 @@
 // Assignment Code
 var generateBtn = document.querySelector("#generate");
 
+/*~*~*~*~*~*~* GLOBAL VARIABLES *~*~*~*~*~*~*/
+
 // Define character sets
 var characters = {
   alphaLower: ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"],
@@ -49,17 +51,21 @@ var use = {
   alphaUpper: false,
   numeric: false,
   special: false,
+  countCharacterSets: 0,
   characters: [],
   reset: function() {
     this.alphaLower = false;
     this.alphaUpper = false;
     this.numeric = false;
     this.special = false;
+    this.countCharacterSets = 0;
     this.characters = [];
   }
 }
 
-// select characters function
+/*~*~*~*~*~*~*FUNCTIONS*~*~*~*~*~*~*/
+
+// Select Characters 
 var selectCharacters = function () {
   // reset values of user selections
   use.reset();
@@ -73,6 +79,7 @@ var selectCharacters = function () {
       //add lowercase characters to use.characters array
       use.characters = use.characters.concat(characters.alphaLower);
       selectedCharactersAlert += '  - lowercase (abc...)\n';
+      use.countCharacterSets ++;
     }
 
     // ask user: include uppercase?
@@ -81,6 +88,7 @@ var selectCharacters = function () {
       //add uppercase characters to var use.characters array
       use.characters = use.characters.concat(characters.alphaUpper);
       selectedCharactersAlert += '  - uppercase (ABC...)\n';
+      use.countCharacterSets ++;
     }
 
     // ask user: include numeric?
@@ -89,6 +97,7 @@ var selectCharacters = function () {
       //add numeric characters to var use.characters array
       use.characters = use.characters.concat(characters.numeric);
       selectedCharactersAlert += '  - numeric (123...)\n';
+      use.countCharacterSets ++;
     }
 
     // ask user: include special?
@@ -97,8 +106,8 @@ var selectCharacters = function () {
       // add special characters to var use.characters array
       use.characters = use.characters.concat(characters.special);
       selectedCharactersAlert += '  - special (!@#...)\n';
+      use.countCharacterSets ++;
     }
-    
     // if no characters were selected reenter loop
     if (!use.alphaLower && !use.alphaUpper && !use.numeric && !use.special) {
       window.alert("Passwords need characters. Try Again!");
@@ -117,42 +126,68 @@ var selectCharacters = function () {
   }
 }
 
-// Generate Password
-var generatePassword = function () {
-  //reset password
-  var randomString = "";
-  // ask for password length
-  var promptLength = window.prompt("Please choose a password length.\nEnter a number between 8 and 128");
-  // convert string to int
-  promptLength = parseInt(promptLength);
-  // test if promptLength between 8 and 128
-  if (promptLength >= 8 && promptLength <= 128) {
-    // if true ask what types of characters to include select characters
-    selectCharacters();
-    // for loop to generate characters for length of password
-    for (var i = 0; i < promptLength; i++) {
-      //create a random character
-      var randomChar = use.characters[Math.floor(Math.random() * use.characters.length)];
-      //update a radom string using each random character[i]
-      randomString = randomString + randomChar;
+// Generate Password Function
+  var generatePassword = function () {
+    //reset password
+    var passwordString = "";
+    // ask for password length
+    var promptLength = window.prompt("Please choose a password length.\nEnter a number between 8 and 128");
+    // convert string to int
+    promptLength = parseInt(promptLength);
+    // test if promptLength between 8 and 128
+    if (promptLength >= 8 && promptLength <= 128) {
+      // if true ask what types of characters to include select characters
+      selectCharacters();
+      // for length of password - 1 for each 'required' char type
+      for (var i = 0; i < promptLength - use.countCharacterSets; i++) {
+        // choose a random character from all selected character sets
+        var randomCharacter = use.characters[Math.floor(Math.random() * use.characters.length)];
+        // add that character to passwordString
+        passwordString += randomCharacter;
+      }
+      // if user selected lowercase
+      if(use.alphaLower) {
+        // add 1 lowercase character to passwordString
+        var addOn = characters.alphaLower[Math.floor(Math.random() * characters.alphaLower.length)];
+        passwordString += addOn;
+      }
+      // if user selected uppercase
+      if(use.alphaUpper) {
+        // add 1 uppercase character to passwordString
+        addOn = characters.alphaUpper[Math.floor(Math.random() * characters.alphaUpper.length)];
+        passwordString += addOn;
+      }
+      // if user selected numeric
+      if(use.numeric) {
+        // add 1 numeric character to passwordString
+        addOn = characters.numeric[Math.floor(Math.random() * characters.numeric.length)];
+        passwordString += addOn;
+      }
+      // if user selected special
+      if(use.special) {
+        // add 1 special character to passwordString
+        addOn = characters.special[Math.floor(Math.random() * characters.special.length)];
+        passwordString += addOn;
+      }
+      //the string now will always end with lower, upper, numeric, special if you choose all characters I don't like that.
+
+      return passwordString;
     }
-    return randomString;
-  }
-  else {
-    window.alert("please enter a valid answer");
-    return generatePassword();
-  }
-};
+    else {
+      window.alert("please enter a valid answer");
+      return generatePassword();
+    }
+  };
 
-// write password to the #password input
-function writePassword() {
-  
-  var password = generatePassword();
+// Write Password Function: writes generatePassword result to the #password input
+  function writePassword() {
+    
+    var password = generatePassword();
 
-  var passwordText = document.querySelector("#password");
+    var passwordText = document.querySelector("#password");
 
-  passwordText.value = password;
-};
+    passwordText.value = password;
+  };
 
 // clicking the generateBtn calls function writePassword()
 generateBtn.addEventListener("click", writePassword);

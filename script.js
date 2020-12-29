@@ -1,49 +1,15 @@
-/*~~~~~~~~~~~~~~~CHECK LIST~~~~~~~~~~~~~~~*
-  GIVEN I need a new, secure password:
-  
-  WHEN I click the button to generate a password
-  THEN I am presented with a series of prompts for password criteria
-    -done
-  
-  WHEN prompted for password criteria
-  THEN I select which criteria to include in the password
-    -done
-  
-  WHEN prompted for the length of the password
-  THEN I choose a length of at least 8 characters and no more than 128 characters
-    -done
-  
-  WHEN prompted for character types to 'INCLUDE' in the password 
-  THEN I choose lowercase, uppercase, numeric, and/or special characters
-    -done
-  
-  WHEN I answer each prompt
-  THEN my input should be validated and at least one character type should be selected
-    -done: validation occurs after all selections (better user experience)
-  
-  WHEN all prompts are answered
-  THEN a password is generated that matches the selected criteria
-    -done
-  
-  WHEN the password is generated
-  THEN the password is either displayed in an alert or written to the page
-    -done
-*~~~~~~~~~~~~~~~~CHECK LIST~~~~~~~~~~~~~~~*/
-
-// Assignment Code
+/*~*~*~*~*~*~* Assignment Code *~*~*~*~*~*~*/
 var generateBtn = document.querySelector("#generate");
 
 /*~*~*~*~*~*~* GLOBAL VARIABLES *~*~*~*~*~*~*/
-
-// Define character sets
+// define character sets
 var characters = {
   alphaLower: ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"],
   alphaUpper: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"],
   numeric: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"],
   special: ["!", '"', "#", "$", "%", "&", "'", "(", ")", "*", "+", ",", "-", ".", "/", ":", ";", "<", "=", ">", "?", "@", "[", "\\", "]", "^", "_", "`", "{", "|", "}", "~"]
 };
-
-// List of user choice variables. default user choices to false
+// list of user choice variables. default user choices to false
 var use = {
   alphaLower: false,
   alphaUpper: false,
@@ -60,10 +26,8 @@ var use = {
     this.characters = [];
   }
 }
-
 /*~*~*~*~*~*~*FUNCTIONS*~*~*~*~*~*~*/
-
-// Select Characters 
+/*~Select Characters~*/
 var selectCharacters = function () {
   // reset values of user selections
   use.reset();
@@ -79,7 +43,6 @@ var selectCharacters = function () {
       selectedCharactersAlert += '  - lowercase (abc...)\n';
       use.countCharacterSets ++;
     }
-
     // ask user: include uppercase?
     use.alphaUpper = window.confirm("Include uppercase characters? (ABC...)");
     if (use.alphaUpper) {
@@ -88,7 +51,6 @@ var selectCharacters = function () {
       selectedCharactersAlert += '  - uppercase (ABC...)\n';
       use.countCharacterSets ++;
     }
-
     // ask user: include numeric?
     use.numeric = window.confirm("Include numeric characters? (123...)");
     if (use.numeric) {
@@ -97,7 +59,6 @@ var selectCharacters = function () {
       selectedCharactersAlert += '  - numeric (123...)\n';
       use.countCharacterSets ++;
     }
-
     // ask user: include special?
     use.special = window.confirm("Include special characters? (!@#...)");
     if (use.special) {
@@ -106,7 +67,7 @@ var selectCharacters = function () {
       selectedCharactersAlert += '  - special (!@#...)\n';
       use.countCharacterSets ++;
     }
-    // if no characters were selected reenter loop
+    // if no characters were selected alert user they need to select some and start while loop again
     if (!use.alphaLower && !use.alphaUpper && !use.numeric && !use.special) {
       window.alert("Passwords need characters. Try Again!");
     }
@@ -123,54 +84,62 @@ var selectCharacters = function () {
     }
   }
 }
-
 // Generate Password Function
   var generatePassword = function () {
     //reset password
-    var passwordString = "";
+    var passwordArray = [];
     // ask for password length
-    var promptLength = window.prompt("Please choose a password length.\nEnter a number between 8 and 128");
+    var promptLength = window.prompt("Please choose a password length.\nType a number between 8 and 128.");
     // convert string to int
     promptLength = parseInt(promptLength);
-    // test if promptLength between 8 and 128
+    // test if user response is between 8 and 128
     if (promptLength >= 8 && promptLength <= 128) {
-      // if true ask what types of characters to include select characters
+      // if true ask what types of characters to include
       selectCharacters();
-      // for length of password - 1 for each 'required' char type
+      // for the length of password - 1 for each 'required' character type...
       for (var i = 0; i < promptLength - use.countCharacterSets; i++) {
-        // choose a random character from all selected character sets
+        // choose a random character from all selected character sets...
         var randomCharacter = use.characters[Math.floor(Math.random() * use.characters.length)];
-        // add that character to passwordString
-        passwordString += randomCharacter;
+        // and add that character to passwordArray.
+        passwordArray.push(randomCharacter);
       }
       // if user selected lowercase
       if(use.alphaLower) {
-        // add 1 lowercase character to passwordString
+        // add 1 lowercase character to passwordArray to make sure at least one makes it in.
         var addOn = characters.alphaLower[Math.floor(Math.random() * characters.alphaLower.length)];
-        passwordString += addOn;
+        passwordArray.push(addOn);
       }
       // if user selected uppercase
       if(use.alphaUpper) {
-        // add 1 uppercase character to passwordString
+        // add 1 uppercase character to passwordArray
         addOn = characters.alphaUpper[Math.floor(Math.random() * characters.alphaUpper.length)];
-        passwordString += addOn;
+        passwordArray.push(addOn);
       }
       // if user selected numeric
       if(use.numeric) {
-        // add 1 numeric character to passwordString
+        // add 1 numeric character to passwordArray
         addOn = characters.numeric[Math.floor(Math.random() * characters.numeric.length)];
-        passwordString += addOn;
+        passwordArray.push(addOn);
       }
       // if user selected special
       if(use.special) {
-        // add 1 special character to passwordString
+        // add 1 special character to passwordArray
         addOn = characters.special[Math.floor(Math.random() * characters.special.length)];
-        passwordString += addOn;
+        passwordArray.push(addOn);
       }
-      //the string now will always end with lower, upper, numeric, special if you choose all characters I don't like that.
-
+      // "Fisher-Yates Shuffle" the password array so required characters appear in random positions instead of appended onto the end
+      for(var i = passwordArray.length - 1; i > 0; i--) {
+        var            j = Math.floor(Math.random() * i)
+        var  storeToSwap = passwordArray[i]
+        passwordArray[i] = passwordArray[j]
+        passwordArray[j] = storeToSwap
+      }
+      //convert passwordArray to a string
+      var passwordString = passwordArray.join('');
+      //return that string so it can be accessed by writePassword() function's first statement
       return passwordString;
     }
+    //else the user didn't choose a length between 8 and 128 - start over
     else {
       window.alert("please enter a valid answer");
       return generatePassword();
@@ -178,12 +147,9 @@ var selectCharacters = function () {
   };
 
 // Write Password Function: writes generatePassword result to the #password input
-  function writePassword() {
-    
+  function writePassword() {    
     var password = generatePassword();
-
     var passwordText = document.querySelector("#password");
-
     passwordText.value = password;
   };
 

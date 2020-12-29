@@ -15,13 +15,11 @@
   
   WHEN prompted for character types to 'INCLUDE' in the password 
   THEN I choose lowercase, uppercase, numeric, and/or special characters
-    -as of now: character types are 'allowed' NOT 'included' 
-    -each character type won't always be included if 2 or more types are selected
-    -the longer the password the more likely each type will be included
+    -done
   
   WHEN I answer each prompt
   THEN my input should be validated and at least one character type should be selected
-    -each prompt is not validated only one type included is validated
+    -done: validation occurs after all selections (better user experience)
   
   WHEN all prompts are answered
   THEN a password is generated that matches the selected criteria

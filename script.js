@@ -32,88 +32,107 @@
     -done
 *~~~~~~~~~~~~~~~~CHECK LIST~~~~~~~~~~~~~~~*/
 
+// Assignment Code
+var generateBtn = document.querySelector("#generate");
+
+// Define character sets
 var characters = {
   alphaLower: ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"],
   alphaUpper: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"],
   numeric: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"],
-  special: ["!", '"', "#", "$", "%", "&", "'", "(", ")", "*", "+", ",", "-", ".", "/", ":", ";", "<", "=", ">", "?", "@", "[", "\\", "]", "^", "_", "`", "{", "|", "}" ,"~"]
+  special: ["!", '"', "#", "$", "%", "&", "'", "(", ")", "*", "+", ",", "-", ".", "/", ":", ";", "<", "=", ">", "?", "@", "[", "\\", "]", "^", "_", "`", "{", "|", "}", "~"]
 };
 
-// Assignment Code
-var generateBtn = document.querySelector("#generate");
+// List of user choice variables. default user choices to false
+var use = {
+  alphaLower: false,
+  alphaUpper: false,
+  numeric: false,
+  special: false,
+  characters: [],
+  reset: function() {
+    this.alphaLower = false;
+    this.alphaUpper = false;
+    this.numeric = false;
+    this.special = false;
+    this.characters = [];
+  }
+}
 
-// Generate Password
-var generatePassword = function(){
-
-  //reset password and chosen characters before regenerating
-  var randomString = "";
-  var userCharacters = [];
-  var alphaLower = false;
-  var alphaUpper = false;
-  var numeric = false;
-  var special = false;
-
-  // ask for password length
-  var promptLength = window.prompt("Please choose a password length.\nEnter a number between 8 and 128");
-  
-  // convert string to int
-  promptLength = parseInt(promptLength);
-  
-  // test if promptLength between 8 and 128
-  if (promptLength >= 8 && promptLength <= 128) {
-    
-    // if true ask what types of characters to include
-    
+// select characters function
+var selectCharacters = function () {
+  // reset values of user selections
+  use.reset();
+  // loop as long as use.charTypes are all false
+  while (!use.alphaLower && !use.alphaUpper && !use.numeric && !use.special) {
+    //default use.characters as empty array
+    var selectedCharactersAlert = "";
     // ask user: include lowercase?
-    alphaLower = window.confirm ("allow lowercase characters? abc...");
-    // ask user to confirm.
-    alphaLower = window.confirm ("are you sure?");
-    if(alphaLower) {
-      //add lowercase to var userCharacters array
-      userCharacters = userCharacters.concat(characters.alphaLower);
+    use.alphaLower = window.confirm("Include lowercase characters? (abc...)");
+    if (use.alphaLower) {
+      //add lowercase characters to use.characters array
+      use.characters = use.characters.concat(characters.alphaLower);
+      selectedCharactersAlert += '  - lowercase (abc...)\n';
     }
 
     // ask user: include uppercase?
-    alphaUpper = window.confirm ("allow uppercase characters? ABC...");
-    // ask user to confirm.
-    alphaUpper = window.confirm ("just confirming?");
-    if(alphaUpper) {
-      //add uppercase to var userCharacters array
-      userCharacters = userCharacters.concat(characters.alphaUpper);
+    use.alphaUpper = window.confirm("Include uppercase characters? (ABC...)");
+    if (use.alphaUpper) {
+      //add uppercase characters to var use.characters array
+      use.characters = use.characters.concat(characters.alphaUpper);
+      selectedCharactersAlert += '  - uppercase (ABC...)\n';
     }
 
     // ask user: include numeric?
-    numeric = window.confirm ("allow numeric characters? 123...");
-    // ask user to confirm.
-    numeric = window.confirm ("are you positive?");
-    if(numeric) {
-      //add numeric to var userCharacters array
-      userCharacters = userCharacters.concat(characters.numeric);
+    use.numeric = window.confirm("Include numeric characters? (123...)");
+    if (use.numeric) {
+      //add numeric characters to var use.characters array
+      use.characters = use.characters.concat(characters.numeric);
+      selectedCharactersAlert += '  - numeric (123...)\n';
     }
 
     // ask user: include special?
-    special = window.confirm ("allow special characters? !@#...");
-    // ask user to confirm.
-    special = window.confirm ("final answer?");
-    if(special) {
-      // add special to var userCharacters array
-      userCharacters = userCharacters.concat(characters.special);
-      }
-    // log chosen characters to the console
-    console.log(userCharacters);
-
-      if( 
-        alphaLower === false &&
-        alphaUpper === false &&
-        numeric === false &&
-        special === false ) {
-        window.alert("passwords need characters... try again");
-        return generatePassword();
+    use.special = window.confirm("Include special characters? (!@#...)");
+    if (use.special) {
+      // add special characters to var use.characters array
+      use.characters = use.characters.concat(characters.special);
+      selectedCharactersAlert += '  - special (!@#...)\n';
     }
+    
+    // if no characters were selected reenter loop
+    if (!use.alphaLower && !use.alphaUpper && !use.numeric && !use.special) {
+      window.alert("Passwords need characters. Try Again!");
+    }
+    else {
+      // ask user to confirm selected characters
+      var confirmCharacters = window.confirm(
+        "You have selected the following character types:\n" +
+        selectedCharactersAlert +
+        "Would you like to generate your password?");
+      // if they do not confirm, reset characters which will keep them in while loop
+      if (!confirmCharacters) {
+        use.reset();
+      }
+    }
+  }
+}
+
+// Generate Password
+var generatePassword = function () {
+  //reset password
+  var randomString = "";
+  // ask for password length
+  var promptLength = window.prompt("Please choose a password length.\nEnter a number between 8 and 128");
+  // convert string to int
+  promptLength = parseInt(promptLength);
+  // test if promptLength between 8 and 128
+  if (promptLength >= 8 && promptLength <= 128) {
+    // if true ask what types of characters to include select characters
+    selectCharacters();
     // for loop to generate characters for length of password
     for (var i = 0; i < promptLength; i++) {
       //create a random character
-      var randomChar = userCharacters[Math.floor(Math.random() * userCharacters.length)];
+      var randomChar = use.characters[Math.floor(Math.random() * use.characters.length)];
       //update a radom string using each random character[i]
       randomString = randomString + randomChar;
     }
@@ -124,14 +143,14 @@ var generatePassword = function(){
     return generatePassword();
   }
 };
- 
+
 // write password to the #password input
 function writePassword() {
-
+  
   var password = generatePassword();
-  
+
   var passwordText = document.querySelector("#password");
-  
+
   passwordText.value = password;
 };
 
